@@ -33,9 +33,11 @@ def simple_data() -> Tuple[pd.DataFrame, pd.DataFrame]:
     x1 = np.random.normal(0, 1, n)
     x2 = np.random.normal(0, 1, n)
 
+    # Treatment assignment (confounded)
     prob_t = 1 / (1 + np.exp(-(0.5 * x1 + 0.3 * x2)))
     t = np.random.binomial(1, prob_t, n)
 
+    # Outcome with constant treatment effect = 2.0
     y = 2.0 * t + x1 + 0.5 * x2 + np.random.normal(0, 0.5, n)
 
     df = pd.DataFrame({"x1": x1, "x2": x2, "t": t, "y": y})
@@ -54,9 +56,12 @@ def heterogeneous_data() -> Tuple[pd.DataFrame, pd.DataFrame]:
     x1 = np.random.normal(0, 1, n)
     x2 = np.random.normal(0, 1, n)
 
+    # Treatment assignment (confounded)
     prob_t = 1 / (1 + np.exp(-(0.4 * x1)))
     t = np.random.binomial(1, prob_t, n)
 
+    # Outcome with heterogeneous effect: effect depends on x1
+    # CATE(x1) = 1 + 0.5*x1
     te = 1.0 + 0.5 * x1
     y = te * t + x1 + 0.3 * x2 + np.random.normal(0, 0.5, n)
 
@@ -76,8 +81,10 @@ def continuous_treatment_data() -> Tuple[pd.DataFrame, pd.DataFrame]:
     x1 = np.random.normal(0, 1, n)
     x2 = np.random.normal(0, 1, n)
 
+    # Continuous treatment assignment (confounded)
     t = 10 + x1 + 2 * x2 + np.random.normal(0, 1, n)
 
+    # Outcome with linear effect of treatment
     y = t + x1 + 0.5 * x2 + np.random.normal(0, 0.5, n)
 
     df = pd.DataFrame({"x1": x1, "x2": x2, "t": t, "y": y})

@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Causal Models - Prinu Mathew Final Project Report</title>
+  <style>
+    @page {
+      size: Letter;
+      margin: 0.7in;
+    }
+
+    :root {
+      --ink: #18222d;
+      --muted: #5b6975;
+      --accent: #9d3a22;
+      --rule: #d8c9bf;
+      --panel: #fbf7f3;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: #ffffff;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 11pt;
+      line-height: 1.42;
+    }
+
+    main {
+      max-width: 7in;
+      margin: 0 auto;
+    }
+
+    .hero {
+      border-top: 8px solid var(--accent);
+      padding-top: 0.22in;
+      margin-bottom: 0.18in;
+    }
+
+    .eyebrow {
+      font-family: "Segoe UI", Arial, sans-serif;
+      font-size: 9pt;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin: 0 0 10px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 22pt;
+      line-height: 1.08;
+      letter-spacing: -0.01em;
+    }
+
+    .subtitle {
+      margin: 10px 0 0;
+      color: var(--muted);
+      font-size: 11.5pt;
+    }
+
+    .meta {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin: 18px 0 22px;
+      padding: 12px 14px;
+      background: linear-gradient(135deg, #fffaf5 0%, var(--panel) 100%);
+      border: 1px solid var(--rule);
+    }
+
+    .meta-block {
+      min-width: 0;
+    }
+
+    .meta-label {
+      display: block;
+      font-family: "Segoe UI", Arial, sans-serif;
+      font-size: 8.5pt;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+
+    .meta-value {
+      font-size: 10.5pt;
+    }
+
+    h2 {
+      margin: 20px 0 8px;
+      padding-bottom: 4px;
+      border-bottom: 1px solid var(--rule);
+      font-size: 13pt;
+      color: var(--accent);
+    }
+
+    h3 {
+      margin: 14px 0 6px;
+      font-size: 11.5pt;
+      color: var(--ink);
+    }
+
+    p {
+      margin: 0 0 9px;
+      text-align: justify;
+    }
+
+    ul {
+      margin: 6px 0 10px 18px;
+      padding: 0;
+    }
+
+    li {
+      margin: 0 0 5px;
+    }
+
+    .callout {
+      margin: 12px 0 14px;
+      padding: 10px 12px;
+      border-left: 4px solid var(--accent);
+      background: var(--panel);
+    }
+
+    .grid-two {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin: 8px 0 10px;
+    }
+
+    .card {
+      padding: 11px 12px;
+      border: 1px solid var(--rule);
+      background: #fffdfb;
+    }
+
+    .small {
+      font-size: 10pt;
+      color: var(--muted);
+    }
+
+    .footer-note {
+      margin-top: 16px;
+      font-size: 9.5pt;
+      color: var(--muted);
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <section class="hero">
+      <p class="eyebrow">Final Project Proposal</p>
+      <h1>Estimating the Causal Effect of Lower-Priced Sponsored Search Offers on Conversion</h1>
+      <p class="subtitle">
+        Proposed analysis using the Criteo Sponsored Search Conversion Log Dataset, adapted to the course proposal rubric and framed using the same explicit identification-plus-method comparison style used in the sample Criteo uplift report.
+      </p>
+      <div class="meta">
+        <div class="meta-block">
+          <span class="meta-label">Student</span>
+          <span class="meta-value">Prinu Mathew</span>
+        </div>
+        <div class="meta-block">
+          <span class="meta-label">Course</span>
+          <span class="meta-value">Causal Models in Data Science</span>
+        </div>
+        <div class="meta-block">
+          <span class="meta-label">Date</span>
+          <span class="meta-value">April 24, 2026</span>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>1. Causal Question and Motivation</h2>
+      <p>
+        My primary causal question is: among comparable clicked sponsored-search product ads, what is the causal effect of offering a lower-priced product on the probability that the user converts within 30 days? A secondary question is whether that effect varies systematically by device context, product category, audience segment, and recent click intensity. This framing keeps the project tied to an advertiser decision that is economically meaningful: whether lower-priced offers should be prioritized or promoted more aggressively for some users than others.
+      </p>
+      <p>
+        A naive comparison of conversion rates across cheap and expensive products would be biased. Lower-priced products differ from higher-priced products in brand, category, seller quality, user intent, and timing. In the language of the class 5 causal identification lecture, several backdoor paths can connect price and conversion through observed and unobserved demand factors. The project therefore needs an explicit identification strategy before any treatment-effect model is credible.
+      </p>
+      <div class="callout">
+        The practical motivation is personalization. If lower-priced offers only lift conversion for selected users or categories, then the business value lies not just in an average treatment effect, but in identifying where price sensitivity is largest and where price cuts are unlikely to matter.
+      </div>
+    </section>
+
+    <section>
+      <h2>2. Dataset Selection and Description</h2>
+      <p>
+        I will use the Criteo Sponsored Search Conversion Log Dataset described in <em>ideas.md</em>. The dataset contains 90 days of Criteo Predictive Search traffic and is approximately 6.4 GB. Each row corresponds to a clicked product advertisement shown after a user expressed intent in a search engine. The data include product attributes, user and device context, click timing, and whether the click converted within a 30-day window.
+      </p>
+      <div class="grid-two">
+        <div class="card">
+          <h3>Main outcome</h3>
+          <p><strong>Sale</strong>: binary indicator that conversion occurred within 30 days.</p>
+          <p><strong>Secondary outcome</strong>: <strong>SalesAmountInEuro</strong>, converted to zero for non-purchases for a revenue-oriented robustness analysis.</p>
+        </div>
+        <div class="card">
+          <h3>Main treatment</h3>
+          <p>
+            A binary <strong>low-price offer</strong> indicator constructed within comparable product strata, initially defined by category-country-brand cells and refined after exploratory checks. The baseline contrast will compare bottom-quartile prices to top-quartile prices within those strata.
+          </p>
+        </div>
+      </div>
+      <p>
+        Key pre-treatment covariates available for backdoor adjustment include <strong>click_timestamp</strong>, <strong>nb_clicks_1week</strong>, <strong>product_age_group</strong>, <strong>device_type</strong>, <strong>audience_id</strong>, <strong>product_gender</strong>, <strong>product_brand</strong>, seven product-category hashes, <strong>product_country</strong>, <strong>product_id</strong>, <strong>product_title</strong>, <strong>partner_id</strong>, and <strong>user_id</strong>. The dataset also encodes missing values as <strong>-1</strong>, which will need explicit treatment during preprocessing.
+      </p>
+      <p>
+        This dataset is a good fit for the final project because it is observational, high-dimensional, and business-relevant. It therefore requires both the identification discipline emphasized in class 5 and the flexible heterogeneous-treatment-effect methods covered in class 4.
+      </p>
+    </section>
+
+    <section>
+      <h2>3. Proposed Methods</h2>
+      <h3>Identification Strategy via a Causal Graph</h3>
+      <p>
+        Following the class 5 graphical-model workflow, I will begin with a DAG in which price affects conversion, while user intent, product quality, seller characteristics, and demand seasonality may confound that relationship. The adjustment set will include only pre-click variables. I will not control for <strong>time_delay_for_conversion</strong> or realized revenue when estimating the main treatment effect, because those are downstream of conversion. The initial goal is to justify a backdoor-adjustment strategy and to make the identifying assumptions explicit rather than implicit.
+      </p>
+
+      <h3>Method 1: Doubly Robust AIPW for the Average Treatment Effect</h3>
+      <p>
+        My baseline estimator will be an augmented inverse propensity weighted (AIPW) estimator for the average treatment effect of the low-price indicator on conversion. This is appropriate because treatment is observational, the feature space is high-dimensional, and AIPW remains consistent if either the propensity model or the outcome model is correctly specified. In practice, I will estimate nuisance functions using regularized logistic or tree-based models and then report weighted balance diagnostics and overlap checks.
+      </p>
+
+      <h3>Method 2: X-Learner for Heterogeneous Treatment Effects</h3>
+      <p>
+        From class 4, the X-learner is well suited to binary treatment settings with potentially uneven group sizes. That is likely relevant here because the low-price group may be much smaller or larger than the high-price comparison group depending on how the treatment is defined. The X-learner will estimate conditional average treatment effects (CATEs) across device types, audience segments, product categories, and levels of prior click activity. This will answer the business question of who is most price sensitive rather than only whether price matters on average.
+      </p>
+
+      <h3>Method 3: R-Learner / Double Machine Learning as a Robustness Check</h3>
+      <p>
+        Also from class 4, I plan to estimate the same treatment effect using an R-learner style Double Machine Learning approach with cross-fitting. This method is attractive because it orthogonalizes treatment and outcome residuals, reducing bias from nuisance-model overfitting in a dataset with many hashed features and nonlinear relationships. If the AIPW estimate, the average X-learner effect, and the Double ML estimate are directionally and numerically aligned, confidence in the result will be stronger.
+      </p>
+
+      <div class="callout">
+        Proposed comparison logic: AIPW will anchor the average effect, X-learner will target effect heterogeneity, and R-learner will test whether the main conclusion survives a more flexible orthogonalized estimation strategy.
+      </div>
+    </section>
+
+    <section>
+      <h2>4. Evaluation Plan</h2>
+      <ul>
+        <li>Check treatment prevalence, missingness, class imbalance, and common support before fitting causal models.</li>
+        <li>Use standardized mean differences and propensity-overlap plots to assess whether the treated and control groups are comparable after adjustment.</li>
+        <li>Compare the estimated average effect across AIPW and Double ML and summarize whether the signs and magnitudes are stable.</li>
+        <li>Evaluate CATE estimates on held-out data using ranking-based uplift diagnostics such as cumulative gain and AUUC, following the class 4 emphasis on treatment-effect ordering.</li>
+        <li>Run class 5 style robustness checks, including placebo-treatment refutation, random-common-cause refutation, and data-subset stability checks. If implementation time permits, I will also add a partial-$R^2$ style sensitivity analysis for unobserved confounding.</li>
+      </ul>
+      <p>
+        I will also report subgroup summaries by device type, major product categories, and price-treatment definition so that the final project is interpretable from both a methodological and business perspective.
+      </p>
+    </section>
+
+    <section>
+      <h2>5. Expected Challenges and Next Steps</h2>
+      <p>
+        The main challenge is confounding by latent purchase intent. Even after controlling for rich observed context, some users may be inherently more likely to buy both lower-priced and higher-demand products. I will address this by using a transparent DAG, rich pre-treatment controls, and explicit sensitivity analysis rather than overstating identification. A second challenge is treatment definition: I need enough within-stratum price variation to make the low-price versus high-price comparison credible. My first implementation step will therefore be exploratory profiling of price variation by product category, country, brand, and product identifier.
+      </p>
+      <p>
+        A third challenge is scale. The dataset is large, heavily categorical, and conversion is likely rare. I plan to build the preprocessing and nuisance-model pipeline on a stratified sample, tune models there, and then scale the preferred specification to a larger training set. If necessary, I will use frequency encoding, grouped categories, and sample splitting to keep the workflow computationally feasible.
+      </p>
+      <p>
+        The immediate next steps are: (1) finalize the treatment definition after exploratory data checks, (2) draw the DAG and document the adjustment set, (3) build the preprocessing pipeline for missing values and hashed features, and (4) run a pilot comparison of AIPW, X-learner, and R-learner on a manageable subset before scaling up.
+      </p>
+      <p class="footer-note">
+        Sources used for proposal framing: the Criteo Sponsored Search dataset description in ideas.md, the sample Criteo uplift final report in the samples folder, and course method topics from class 4 (meta-learners and Double ML) and class 5 (graphical causal identification and robustness checks).
+      </p>
+    </section>
+  </main>
+</body>
+</html>
